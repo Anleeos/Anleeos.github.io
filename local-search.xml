@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>算法</title>
+    <link href="/blog/2021/04/23/algorithm_index/"/>
+    <url>/blog/2021/04/23/algorithm_index/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何在安卓项目里使用高德地图</title>
+    <link href="/blog/2021/04/23/instructionGaode/"/>
+    <url>/blog/2021/04/23/instructionGaode/</url>
+    
+    <content type="html"><![CDATA[<h1 id="如何在安卓项目里使用高德地图"><a href="#如何在安卓项目里使用高德地图" class="headerlink" title="如何在安卓项目里使用高德地图"></a>如何在安卓项目里使用高德地图</h1><h2 id="导入依赖"><a href="#导入依赖" class="headerlink" title="导入依赖"></a>导入依赖</h2><p><code>适用于AndroidStudio 4.x版本</code></p><p>根据自己的需求在bulid.gradle(Module)的dependencies添加对应的sdk</p><p>添加3d地图示例 <code>implementation &#39;com.amap.api:3dmap:7.9.1&#39;</code></p><p>结构为 implementation ‘包名:sdk:版本’</p><p>各sdk：</p><table><thead><tr><th>sdk</th><th>引入代码</th></tr></thead><tbody><tr><td>3d地图</td><td>implementation ‘com.amap.api:3dmap:latest.integration’</td></tr><tr><td>2d地图</td><td>implementation ‘com.amap.api:map2d:latest.integration’</td></tr><tr><td>导航</td><td>implementation ‘com.amap.api:navi-3dmap:latest.integration’</td></tr><tr><td>搜索</td><td>implementation ‘com.amap.api:search:latest.integration’</td></tr><tr><td>定位</td><td>implementation ‘com.amap.api:location:latest.integration’</td></tr></tbody></table><p><code>使用latest.integration会自动下载最新版</code></p><p>建议使用3d地图，可以避免许多潜在的麻烦，关于高德的其他sdk的依赖名可以在官方指南里找到。2d地图和3d地图无法同时使用，存在冲突。</p><p>只需要添加依赖就行了，Gradle会自动下载需要的依赖。</p><p>而高德官方目前（2021-4）的文档里面仍然提供老版本的安卓项目的范例，对于初学者不是很友好。对于目前版本的使用者，不必要手动添加依赖。</p><p>关于Gradle的说明可见这：(尚未编写)</p><h2 id="使用地图"><a href="#使用地图" class="headerlink" title="使用地图"></a>使用地图</h2><h3 id="在Activity中使用"><a href="#在Activity中使用" class="headerlink" title="在Activity中使用"></a>在Activity中使用</h3><p>说明:为了在Activity中使用地图,我们需要布置三个文件</p><ol><li>在AndroidManifest中索取相应的权限,并添加高德key</li><li>展示地图的Activity</li><li>对应的布局文件layout</li></ol><h4 id="AndroidManifest"><a href="#AndroidManifest" class="headerlink" title="AndroidManifest"></a>AndroidManifest</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs xml">//地图SDK（包含其搜索功能）需要的基础权限<br>     <br><span class="hljs-comment">&lt;!--允许程序打开网络套接字--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.INTERNET&quot;</span> /&gt;</span><br><span class="hljs-comment">&lt;!--允许程序设置内置sd卡的写权限--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;</span> /&gt;</span>   <br><span class="hljs-comment">&lt;!--允许程序获取网络状态--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.ACCESS_NETWORK_STATE&quot;</span> /&gt;</span> <br><span class="hljs-comment">&lt;!--允许程序访问WiFi网络信息--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.ACCESS_WIFI_STATE&quot;</span> /&gt;</span> <br><span class="hljs-comment">&lt;!--允许程序读写手机状态和身份--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.READ_PHONE_STATE&quot;</span> /&gt;</span>     <br><span class="hljs-comment">&lt;!--允许程序访问CellID或WiFi热点来获取粗略的位置--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.ACCESS_COARSE_LOCATION&quot;</span> /&gt;</span> <br></code></pre></td></tr></table></figure><p>在application标签中加入如下内容：</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.amap.api.v2.apikey&quot;</span> <span class="hljs-attr">android:value</span>=<span class="hljs-string">&quot;key&quot;</span>&gt;</span><br>//开发者申请的key  <br><span class="hljs-tag">&lt;/<span class="hljs-name">meta-data</span>&gt;</span><br></code></pre></td></tr></table></figure><h4 id="Activity"><a href="#Activity" class="headerlink" title="Activity"></a>Activity</h4><p>使用地图需要管理地图控件的生命周期,不过基本和Activity的生命周期是一样的,差任何一步都会造成恐惧无法打开。</p><p>获取地图控件的方法和View一样。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.anleeos.map;<br><br><span class="hljs-keyword">import</span> androidx.appcompat.app.AppCompatActivity;<br><br><span class="hljs-keyword">import</span> android.os.Bundle;<br><br><span class="hljs-keyword">import</span> com.amap.api.maps3d.MapView;<br><br><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MainActivity</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AppCompatActivity</span> </span>&#123;<br>    MapView mMapView;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onCreate</span><span class="hljs-params">(Bundle savedInstanceState)</span> </span>&#123;<br>        <span class="hljs-keyword">super</span>.onCreate(savedInstanceState);<br>        setContentView(R.layout.map);<br>        mMapView = (MapView) findViewById(R.id.map);<br>        mMapView.onCreate(savedInstanceState);<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onDestroy</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">super</span>.onDestroy();<br>        <span class="hljs-comment">//在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图</span><br>        mMapView.onDestroy();<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onResume</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">super</span>.onResume();<br>        <span class="hljs-comment">//在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图</span><br>        mMapView.onResume();<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onPause</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">super</span>.onPause();<br>        <span class="hljs-comment">//在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制</span><br>        mMapView.onPause();<br>    &#125;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-function"><span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title">onSaveInstanceState</span><span class="hljs-params">(Bundle outState)</span> </span>&#123;<br>        <span class="hljs-keyword">super</span>.onSaveInstanceState(outState);<br>        <span class="hljs-comment">//在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态</span><br>        mMapView.onSaveInstanceState(outState);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure><h4 id="layout"><a href="#layout" class="headerlink" title="layout"></a>layout</h4><p>使用包名+类就可以找到相应控件</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">LinearLayout</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;match_parent&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;match_parent&quot;</span>&gt;</span><br>&lt;com.amap.api.maps3d.MapView<br>    android:id=&quot;@+id/map&quot;<br>    android:layout_width=&quot;match_parent&quot;<br>    android:layout_height=&quot;match_parent&quot;&gt;<span class="hljs-tag">&lt;/<span class="hljs-name">com.amap.api.maps3d.MapView</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">LinearLayout</span>&gt;</span><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Android</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Android</title>
+    <link href="/blog/2021/04/23/Android_index/"/>
+    <url>/blog/2021/04/23/Android_index/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Android"><a href="#Android" class="headerlink" title="Android"></a>Android</h1><p>关于一些安卓项目的文章</p><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p><a href="">如何在安卓项目里使用高德地图</a></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>Android</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>机器学习</title>
+    <link href="/blog/2021/04/23/ml_index/"/>
+    <url>/blog/2021/04/23/ml_index/</url>
+    
+    <content type="html"><![CDATA[<p>记录一些机器学习</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>machine learning</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>数学</title>
+    <link href="/blog/2021/04/23/math_index/"/>
+    <url>/blog/2021/04/23/math_index/</url>
+    
+    <content type="html"><![CDATA[<p>纪录一些数学问题</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>math</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SpringBoot</title>
+    <link href="/blog/2021/04/23/SpringBoot_index/"/>
+    <url>/blog/2021/04/23/SpringBoot_index/</url>
+    
+    <content type="html"><![CDATA[<p>记录一些SpringBoot</p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>SpringBoot</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>index</title>
+    <link href="/blog/2021/04/23/index/"/>
+    <url>/blog/2021/04/23/index/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Anleeos-Blog"><a href="#Anleeos-Blog" class="headerlink" title="Anleeos Blog"></a>Anleeos Blog</h1><p>这个网站用来存放使用轮子的心得、笔记。</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  
+</search>
